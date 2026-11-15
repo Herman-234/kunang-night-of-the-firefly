@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KUNANG — Night of the Firefly</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #05081a;
+    height: 100%;
+  }
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: "Trebuchet MS", Verdana, sans-serif;
+  }
+  #wrap {
+    text-align: center;
+  }
+  canvas {
+    display: block;
+    width: 960px;
+    height: 600px;
+    max-width: 96vw;
+    max-height: 88vh;
+    border-radius: 10px;
+    box-shadow: 0 0 60px rgba(90, 140, 255, 0.25), 0 0 0 1px rgba(255, 226, 122, 0.15);
+    cursor: crosshair;
+  }
+  #hint {
+    color: #7d90b5;
+    font-size: 12px;
+    margin-top: 10px;
+    letter-spacing: 0.04em;
+  }
+</style>
+</head>
+<body>
+  <div id="wrap">
+    <canvas id="game" width="960" height="600"></canvas>
+    <div id="hint">KUNANG — Night of the Firefly &nbsp;·&nbsp; mouse or WASD to fly &nbsp;·&nbsp; Space / click to flash &nbsp;·&nbsp; P pauses &nbsp;·&nbsp; M mutes</div>
+  </div>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
