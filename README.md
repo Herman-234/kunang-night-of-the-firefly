@@ -1,5 +1,11 @@
 # KUNANG — Night of the Firefly
 
+[![make.fun](https://make.fun/badge/best-game-01.svg)](https://make.fun/bounty/best-game-01)
+[![rank](https://make.fun/badge/best-game-01/Herman-234/kunang-night-of-the-firefly/rank.svg)](https://make.fun/bounty/best-game-01)
+[![reward](https://make.fun/badge/best-game-01/Herman-234/kunang-night-of-the-firefly/reward.svg)](https://make.fun/bounty/best-game-01)
+
+Built for the [Make the best game bounty](https://make.fun/bounty/best-game-01) on make.fun.
+
 An original 2D canvas game for make.fun's **best-game-01** bounty
 ("Make the best game", $1,000 USDC).
 
