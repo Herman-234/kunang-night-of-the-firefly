@@ -8,7 +8,8 @@ import {
   CANVAS_W, CANVAS_H, NIGHT_SECONDS, START_LIVES, LIGHT_MAX,
   LIGHT_DRAIN_PER_SEC, LIGHT_PER_DEW, LIGHT_PER_BAT_HIT, LIGHT_PER_WEB,
   DARK_LIGHT, DEW_COLORS, DEW_BASE_POINTS, DEW_MAX_COMBO, DEW_SPAWN_EVERY_SEC,
-  DEW_FALL_MIN, DEW_FALL_MAX, DEW_RADIUS, BAT_SPAWN_EVERY_SEC, BAT_SPAWN_MIN_SEC,
+  DEW_FALL_MIN, DEW_FALL_MAX, DEW_RADIUS, GOLDEN_DEW_POINTS, GOLDEN_DEW_LIGHT,
+  GOLDEN_DEW_RADIUS, GOLDEN_DEW_EVERY_SEC, GOLDEN_DEW_CHANCE, BAT_SPAWN_EVERY_SEC, BAT_SPAWN_MIN_SEC,
   BAT_SPEED_MIN, BAT_SPEED_MAX, BAT_RADIUS, BAT_DARK_SPEED_MULT, WEB_COUNT,
   WEB_RADIUS, WEB_SLOW_SECONDS, FLASH_MAX_CHARGES, FLASH_RECHARGE_SEC,
   FLASH_RADIUS, FLASH_STUN_SEC, WAVE_SECONDS, WAVE_BONUS, MAX_WAVE,
@@ -71,6 +72,7 @@ export function createWorld() {
     ambient: [],
     pollen: [],
     dewTimer: 0,
+    goldenTimer: GOLDEN_DEW_EVERY_SEC,
     batTimer: 1.2,
     newBest: false,
   };
@@ -128,6 +130,7 @@ export function resetWorld(world) {
   world.particles = [];
   world.texts = [];
   world.dewTimer = 0;
+  world.goldenTimer = GOLDEN_DEW_EVERY_SEC;
   world.batTimer = 1.4;
   world.newBest = false;
   resetWebs(world);
@@ -149,6 +152,24 @@ function burst(world, x, y, color, n) {
 }
 
 function spawnDew(world) {
+  // Every so often the night offers a golden drop: bigger, brighter, worth
+  // chasing. It falls slower so the player can actually reach it.
+  world.goldenTimer -= DEW_SPAWN_EVERY_SEC;
+  if (world.goldenTimer <= 0 && Math.random() < GOLDEN_DEW_CHANCE + 0.5) {
+    world.goldenTimer = GOLDEN_DEW_EVERY_SEC * (0.8 + Math.random() * 0.5);
+    world.dew.push({
+      x: rand(60, CANVAS_W - 60),
+      y: -20,
+      vy: rand(DEW_FALL_MIN, DEW_FALL_MAX) * 0.7,
+      sway: rand(0, Math.PI * 2),
+      swaySpeed: rand(1.2, 2.4),
+      color: DEW_COLORS[1], // gold
+      r: GOLDEN_DEW_RADIUS,
+      phase: rand(0, Math.PI * 2),
+      golden: true,
+    });
+    return;
+  }
   const color = pick(DEW_COLORS);
   world.dew.push({
     x: rand(30, CANVAS_W - 30),
@@ -198,6 +219,15 @@ function flashBurst(world, sfx) {
 }
 
 function collectDew(world, drop, sfx) {
+  if (drop.golden) {
+    world.score += GOLDEN_DEW_POINTS;
+    world.light = Math.min(LIGHT_MAX, world.light + GOLDEN_DEW_LIGHT);
+    burst(world, drop.x, drop.y, '#ffe27a', 18);
+    burst(world, drop.x, drop.y, '#fff7c0', 8);
+    addText(world, drop.x, drop.y - 14, `GOLDEN +${GOLDEN_DEW_POINTS}`, '#ffe27a', 20);
+    sfx.collect(3);
+    return;
+  }
   const same = world.comboColor === drop.color.name;
   world.combo = same ? Math.min(world.combo + 1, DEW_MAX_COMBO) : 1;
   world.comboColor = drop.color.name;

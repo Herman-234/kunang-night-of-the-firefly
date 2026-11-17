@@ -11,6 +11,7 @@ your light alive, dodge the bats, mind the spider webs — and survive the
 - **Lose:** 3 lives, lost to bat hits.
 - **Light:** drains over time; dew feeds it. In the dark, bats fly faster.
 - **Combo:** same-colour dew in a row multiplies points, up to x5.
+- **Golden dew:** a rare, big, bright drop falls every ~12 seconds — +50 points and +25 light. Always worth flying for.
 - **Flash:** Space or click repels and stuns nearby bats (3 charges, recharging).
 - **Waves:** every 20 seconds the night deepens — faster bats, more dew.
 

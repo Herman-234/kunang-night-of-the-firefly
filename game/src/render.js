@@ -29,6 +29,19 @@ const FLOWERS = [];
 for (let i = 0; i < 14; i++) {
   FLOWERS.push({ x: (i + 0.5) * (CANVAS_W / 14) + (rng() - 0.5) * 26, h: 26 + rng() * 42, sway: rng() * Math.PI * 2 });
 }
+// Glowing bell-flowers along the garden floor: the lower half of the screen
+// was empty dark space in screenshots, so these give it colour and light.
+const GLOWFLOWERS = [];
+const GLOW_COLORS = ['#6ff2ff', '#ffd76a', '#ff8fb3', '#9fe8a8'];
+for (let i = 0; i < 11; i++) {
+  GLOWFLOWERS.push({
+    x: 40 + i * 86 + (rng() - 0.5) * 40,
+    y: CANVAS_H - 26 - rng() * 34,
+    r: 4 + rng() * 4,
+    color: GLOW_COLORS[i % GLOW_COLORS.length],
+    tw: rng() * Math.PI * 2,
+  });
+}
 
 function fmtTime(sec) {
   const s = Math.max(0, Math.ceil(sec));
@@ -85,6 +98,25 @@ function drawBackground(ctx, world, now) {
     ctx.arc(f.x + sway * 2, CANVAS_H - f.h, 6, 0, Math.PI * 2);
     ctx.fill();
   }
+
+  // Glowing bell-flowers: soft halos that light the garden floor.
+  for (const g of GLOWFLOWERS) {
+    const a = 0.5 + 0.35 * Math.sin(now * 0.0012 + g.tw);
+    const halo = ctx.createRadialGradient(g.x, g.y, 1, g.x, g.y, g.r * 4);
+    halo.addColorStop(0, g.color);
+    halo.addColorStop(0.4, g.color + '44');
+    halo.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.globalAlpha = a;
+    ctx.fillStyle = halo;
+    ctx.beginPath();
+    ctx.arc(g.x, g.y, g.r * 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(g.x, g.y, g.r * 0.45, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
 }
 
 function drawWeb(ctx, web, now) {
@@ -133,6 +165,19 @@ function drawDew(ctx, d) {
   ctx.beginPath();
   ctx.arc(x - 3, d.y + bob - 3, 2.2, 0, Math.PI * 2);
   ctx.fill();
+  // Golden dew: the jackpot drop. A four-point star sparkle so it shouts
+  // "fly here" even when the screen is shrunk to a thumbnail.
+  if (d.golden) {
+    ctx.fillStyle = 'rgba(255, 247, 192, 0.95)';
+    const s = d.r * 1.5;
+    ctx.beginPath();
+    ctx.moveTo(x, d.y + bob - s);
+    ctx.quadraticCurveTo(x, d.y + bob, x + s, d.y + bob);
+    ctx.quadraticCurveTo(x, d.y + bob, x, d.y + bob + s);
+    ctx.quadraticCurveTo(x, d.y + bob, x - s, d.y + bob);
+    ctx.quadraticCurveTo(x, d.y + bob, x, d.y + bob - s);
+    ctx.fill();
+  }
 }
 
 function drawBat(ctx, b) {
@@ -140,6 +185,15 @@ function drawBat(ctx, b) {
   const dir = b.vx >= 0 ? 1 : -1;
   ctx.save();
   ctx.translate(b.x, b.y);
+  // A faint violet halo so the dark bat reads against the dark sky,
+  // even in a small screenshot.
+  const halo = ctx.createRadialGradient(0, 0, 2, 0, 0, 44);
+  halo.addColorStop(0, 'rgba(120, 90, 200, 0.30)');
+  halo.addColorStop(1, 'rgba(120, 90, 200, 0)');
+  ctx.fillStyle = halo;
+  ctx.beginPath();
+  ctx.arc(0, 0, 44, 0, Math.PI * 2);
+  ctx.fill();
   ctx.scale(dir, 1);
   // Wings, flapping.
   ctx.fillStyle = '#241f33';
@@ -317,6 +371,14 @@ function panel(ctx, x, y, w, h) {
 
 function drawTitle(ctx, world, now) {
   ctx.fillStyle = 'rgba(5, 8, 24, 0.45)';
+  ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+  // A big firefly glow behind the title panel, so the cover reads warm
+  // and alive instead of a dark box on a dark sky.
+  const halo = ctx.createRadialGradient(CANVAS_W / 2, 300, 20, CANVAS_W / 2, 300, 340);
+  halo.addColorStop(0, 'rgba(216, 255, 122, 0.22)');
+  halo.addColorStop(0.55, 'rgba(160, 220, 120, 0.08)');
+  halo.addColorStop(1, 'rgba(160, 220, 120, 0)');
+  ctx.fillStyle = halo;
   ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
   panel(ctx, 180, 92, 600, 416);
   ctx.save();

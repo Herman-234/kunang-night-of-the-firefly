@@ -33,6 +33,14 @@ export const DEW_FALL_MIN = 42;
 export const DEW_FALL_MAX = 92;
 export const DEW_RADIUS = 11;
 
+// Golden dew: a rare, big, bright drop — the night's jackpot. Worth 50 points
+// and a big light top-up, so it is always worth flying for.
+export const GOLDEN_DEW_POINTS = 50;
+export const GOLDEN_DEW_LIGHT = 25;
+export const GOLDEN_DEW_RADIUS = 16;
+export const GOLDEN_DEW_EVERY_SEC = 12;
+export const GOLDEN_DEW_CHANCE = 0.14; // of each normal spawn, when one is due
+
 // Bats: the danger. They cross the garden in a sine wave.
 export const BAT_SPAWN_EVERY_SEC = 2.2; // wave 1; shrinks as waves rise
 export const BAT_SPAWN_MIN_SEC = 1.05;
@@ -69,5 +77,5 @@ export const DAWN_PER_LIFE = 100;
 export const DAWN_PER_LIGHT = 2;
 
 // Ambient dressing: background fireflies and drifting pollen.
-export const AMBIENT_FIREFLIES = 6;
-export const POLLEN_COUNT = 26;
+export const AMBIENT_FIREFLIES = 10;
+export const POLLEN_COUNT = 34;
